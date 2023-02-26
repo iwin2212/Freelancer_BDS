@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Windows;
-using Extentions;
 using HtmlAgilityPack;
+using Fizzler.Systems.HtmlAgilityPack;
+using System.Linq;
 
 namespace BDS
 {
@@ -16,36 +14,16 @@ namespace BDS
 		public MainWindow()
 		{
 			InitializeComponent();
-			Index();
+			crawlData();
 		}
-		private static async Task<string> CallUrl(string url)
+		private void crawlData()
 		{
-			try
-			{
-				HttpClient client = new();
-				var response = await client.GetStringAsync(url);
-				return response;
-			}
-			catch (Exception ex){
-				Logger.Error(ex.Message);
-				return null;
-			}
-		}
-		public string Index()
-		{
-			//string url = "https://"+cbWebsite.Text;
-			string url = "https://en.wikipedia.org/wiki/List_of_programmers";
-			var response = CallUrl(url).Result;
-			return response;
-		}
-		private void ParseHtml(string html)
-		{
-			HtmlDocument htmlDoc = new HtmlDocument();
-			htmlDoc.LoadHtml(html);
-
-			var programmerLinks = htmlDoc.DocumentNode.Descendants("li")
-				.Where(node => !node.GetAttributeValue("class", "").Contains("tocsection"))
-				.ToList();
+			HtmlWeb htmlWeb = new() { 
+				AutoDetectEncoding= true,
+				OverrideEncoding = Encoding.UTF8
+			};
+			HtmlDocument doc = htmlWeb.Load("https://"+cbWebsite.Text+ "/nha-dat-cho-thue");
+			var threadItems = doc.DocumentNode.QuerySelectorAll(".js__product-link-for-product-id").ToList();
 
 		}
 	}
