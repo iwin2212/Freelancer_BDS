@@ -3,6 +3,7 @@ using System.Windows;
 using HtmlAgilityPack;
 using Fizzler.Systems.HtmlAgilityPack;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BDS
 {
@@ -14,15 +15,16 @@ namespace BDS
 		public MainWindow()
 		{
 			InitializeComponent();
-			crawlData();
+			crawlDataAsync();
 		}
-		private void crawlData()
+		private async Task crawlDataAsync()
 		{
 			HtmlWeb htmlWeb = new() { 
 				AutoDetectEncoding= true,
 				OverrideEncoding = Encoding.UTF8
 			};
-			HtmlDocument doc = htmlWeb.Load("https://"+cbWebsite.Text+ "/nha-dat-cho-thue");
+			var url = $"https://{cbWebsite.Text}/nha-dat-cho-thue";
+			var doc = await htmlWeb.LoadFromWebAsync(url);
 			var threadItems = doc.DocumentNode.QuerySelectorAll(".js__product-link-for-product-id").ToList();
 
 		}
